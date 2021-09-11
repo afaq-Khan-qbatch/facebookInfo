@@ -14,23 +14,9 @@
 		"default_icon": "icons/128.png",
 		"default_popup": "popup/popup.html"
 	},
-	"content_scripts": [
-		{
-			"matches": [
-				"<all_urls>"
-			],
-			"all_frames": true,
-			"js": [
-				"scripts/content_script.js"
-			],
-			"run_at": "document_end"
-		}
-	],
 	"permissions": [
 		"tabs",
 		"storage",
-		"identity",
-		"identity.email",
-		"https://www.walmart.com/ip/*"
+		"<all_urls>"
 	]
 }

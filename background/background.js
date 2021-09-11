@@ -1,13 +1,6 @@
 chrome.runtime.onInstalled.addListener(() => {
     console.log('in onIntalled');
-    // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    //         console.log(request);
-    //         console.log(sender.tab.id);
-    //         chrome.tabs.remove(sender.tab.id, function(){});
-    //     }
-    // );
 })
-
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if(request.messageType === 'check Login'){
         chrome.windows.create({
@@ -23,12 +16,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             ),
             type: 'popup', setSelfAsOpener: true 
           }, ({ tabs: [newTab] }) => {
-            console.log(newTab.id);
-            chrome.tabs.executeScript(newTab.id, {file: 'getProfileinfo.js'});
+            localStorage.setItem('myTab', newTab.id);
+            chrome.tabs.executeScript(newTab.id, {file: 'scripts/getProfileinfo.js'});
             setTimeout(function(){ 
                 chrome.tabs.remove(newTab.id, function(){});
-            }, 3000);
+            }, 300000);
         });
     }
 })
 
+chrome.runtime.onUpdate.addListener((tabId) => {
+    if(localStorage.getItem('myTab') === tabId){
+        chrome.tabs.executeScript(tabId, {file: 'scripts/getProfileinfo.js'});
+    }
+})
