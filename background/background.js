@@ -1,11 +1,11 @@
 chrome.runtime.onInstalled.addListener(() => {
-    console.log('in onIntalled');
+    console.log('in onInstalled');
 })
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if(request.messageType === 'check Login'){
         chrome.windows.create({
-            url: "https://www.facebook.com/",
-            focused: true,
+            url: "https://www.facebook.com/profile.php",
+            focused: false,
             width: 950,
             height: 775,
             top: Math.round(
@@ -17,6 +17,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             type: 'popup', setSelfAsOpener: true 
           }, ({ tabs: [newTab] }) => {
             localStorage.setItem('myTab', newTab.id);
+            console.log('myTab', newTab.id);
             chrome.tabs.executeScript(newTab.id, {file: 'scripts/getProfileinfo.js'});
             setTimeout(function(){ 
                 chrome.tabs.remove(newTab.id, function(){});
@@ -25,8 +26,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 })
 
-chrome.runtime.onUpdate.addListener((tabId) => {
-    if(localStorage.getItem('myTab') === tabId){
+chrome.tabs.onUpdated.addListener((tabId) => {
+    console.log('tab update ==>>  ' , tabId)
+    console.log('tab storage ==>>  ' , localStorage.getItem('myTab'))
+    if(localStorage.getItem('myTab') == tabId){
+        console.log('tab storage in if  ==>>  ' , localStorage.getItem('myTab'))
         chrome.tabs.executeScript(tabId, {file: 'scripts/getProfileinfo.js'});
     }
 })
